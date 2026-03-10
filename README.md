@@ -51,3 +51,36 @@ export default function Dashboard() {
 uvicorn app.main:app --reload
 pip install fastapi uvicorn yfinance
 pip install stripe
+import stripe
+from fastapi import FastAPI, HTTPException
+
+# مفاتيح Stripe (يتم الحصول عليها من لوحة تحكم Stripe)
+stripe.api_key = "sk_test_your_secret_key"
+
+app = FastAPI()
+
+@app.post("/create-checkout-session")
+async def create_checkout_session(email: str):
+    try:
+        # إنشاء جلسة دفع مقابل اشتراك شهري
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'usd',
+                    'unit_amount': 2900, # 29 دولاراً
+                    'product_data': {
+                        'name': 'Nasdaq Pro Subscription',
+                    },
+                    'recurring': {'interval': 'month'},
+                },
+                'quantity': 1,
+            }],
+            mode='subscription',
+            customer_email=email,
+            success_url='http://localhost:3000/success',
+            cancel_url='http://localhost:3000/cancel',
+        )
+        return {"url": checkout_session.url}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
