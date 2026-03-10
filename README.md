@@ -28,3 +28,23 @@ async def run_periodic_check():
 @app.get("/status")
 async def get_status():
     return {"message": "System Operational", "monitored_stocks": list(alerts_db.keys())}
+import React, { useEffect, useState } from 'react';
+
+export default function Dashboard() {
+  const [stock, setStock] = useState({ symbol: 'NVDA', price: 'Loading...' });
+
+  useEffect(() => {
+    fetch('http://127.0.0.1:8000/price/NVDA')
+      .then(res => res.json())
+      .then(data => setStock(data));
+  }, []);
+
+  return (
+    <div style={{ padding: '50px', background: '#111', color: '#fff', textAlign: 'center' }}>
+      <h1>Nasdaq Monitor Pro</h1>
+      <div style={{ fontSize: '40px', color: '#00ff00' }}>
+        {stock.symbol}: ${stock.price}
+      </div>
+    </div>
+  );
+}
