@@ -84,3 +84,12 @@ async def create_checkout_session(email: str):
         return {"url": checkout_session.url}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+@app.get("/premium-feature")
+async def premium_feature(user_id: str):
+    # هنا نتحقق من قاعدة البيانات: هل المشترك دفع؟
+    is_paid = check_subscription_status(user_id)
+    
+    if not is_paid:
+        return {"error": "هذه الميزة للمشتركين فقط. قم بالترقية الآن!"}
+    
+    return {"data": "إليك بيانات ناسداك اللحظية الحصرية 🚀"}
