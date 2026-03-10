@@ -48,3 +48,4 @@ export default function Dashboard() {
     </div>
   );
 }
+uvicorn app.main:app --reload
