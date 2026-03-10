@@ -50,3 +50,4 @@ export default function Dashboard() {
 }
 uvicorn app.main:app --reload
 pip install fastapi uvicorn yfinance
+pip install stripe
